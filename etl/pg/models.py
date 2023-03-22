@@ -31,10 +31,10 @@ class GenreModel(UUIDMixin, IndexMixin):
 
 class ToElasticModel(UUIDMixin, IndexMixin):
     imdb_rating: Optional[float] = None
-    genre: Optional[List[str]] = None
+    genres: Optional[List[dict]] = None
     title: str
     description: Optional[str] = None
-    director: Optional[List[str]] = None
+    directors: Optional[List[dict]] = None
     actors_names: Optional[List[str]] = None
     writers_names: Optional[List[str]] = None
     actors: Optional[List[dict]] = None

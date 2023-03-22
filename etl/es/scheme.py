@@ -48,8 +48,18 @@ MOVIES_SCHEMA = {
             "imdb_rating": {
                 "type": "float"
             },
-            "genre": {
-                "type": "keyword"
+            "genres": {
+                "type": "nested",
+                "dynamic": "strict",
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "text",
+                        "analyzer": "ru_en"
+                    }
+                }
             },
             "title": {
                 "type": "text",
@@ -64,9 +74,18 @@ MOVIES_SCHEMA = {
                 "type": "text",
                 "analyzer": "ru_en"
             },
-            "director": {
-                "type": "text",
-                "analyzer": "ru_en"
+            "directors": {
+                "type": "nested",
+                "dynamic": "strict",
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "text",
+                        "analyzer": "ru_en"
+                    }
+                }
             },
             "actors_names": {
                 "type": "text",
