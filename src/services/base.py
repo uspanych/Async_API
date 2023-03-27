@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 from typing import Optional,  List
-=======
-from typing import Optional, Union, List
->>>>>>> a27a51dbcd352271111c984c9a82e4eb1b169aca
 from elasticsearch import AsyncElasticsearch, NotFoundError
 from redis.asyncio import Redis
 import json
@@ -82,6 +78,8 @@ class BaseService:
                 writer,
             )
 
+            print(body, "!!!!!!!!!!!!")
+
             data = await self._search_in_elastic(
                 index,
                 body,
@@ -150,8 +148,4 @@ class BaseService:
             key,
             value,
             ttl,
-<<<<<<< HEAD
         )
-=======
-        )
->>>>>>> a27a51dbcd352271111c984c9a82e4eb1b169aca

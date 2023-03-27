@@ -3,12 +3,12 @@ import logging
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 
-from etl.config.settings import (
+from config.settings import (
     ES_HOST,
     ES_PORT,
     ES_INDEX
 )
-from etl.services.backoff import backoff
+from services.backoff import backoff
 from .scheme import MOVIES_SCHEMA, GENRES_SCHEMA, PERSONS_SCHEMA
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class ElasticService:
             'persons': PERSONS_SCHEMA,
         }
 
-    @backoff()
+    # @backoff()
     def check_schema(self):
         if not self.client.ping():
             raise ConnectionError('No connection to Elasticsearch')
@@ -54,7 +54,7 @@ class ElasticService:
         logger.info('Create Index ElasticService')
         self.client.indices.create(index=index, body=self.schema.get(index))
 
-    @backoff()
+    # @backoff()
     def load_data_to_es(
             self,
             data: list,
