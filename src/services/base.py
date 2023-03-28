@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-from typing import Optional,  List
-=======
-from typing import Optional, Union, List
->>>>>>> a27a51dbcd352271111c984c9a82e4eb1b169aca
+from typing import Optional, List
 from elasticsearch import AsyncElasticsearch, NotFoundError
 from redis.asyncio import Redis
 import json
@@ -64,7 +60,7 @@ class BaseService:
     ):
         """Метод возвращает список записей."""
 
-        cache_key = f'{index}-{sort_by}-{sort_order}-{page_size}-{page_number}'
+        cache_key = f'{index}-{sort_by}-{sort_order}-{page_size}-{page_number}-{genre}-{actor}-{director}-{writer}'
         offset = (page_size * page_number) - page_size
 
         data = await self._data_from_cache(
@@ -150,8 +146,6 @@ class BaseService:
             key,
             value,
             ttl,
-<<<<<<< HEAD
         )
-=======
-        )
->>>>>>> a27a51dbcd352271111c984c9a82e4eb1b169aca
+
+
