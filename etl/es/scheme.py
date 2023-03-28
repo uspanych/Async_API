@@ -174,7 +174,8 @@ PERSONS_SCHEMA = {
             },
             "full_name": {
                 "type": "text",
-                "analyzer": "ru_en"
+                "analyzer": "ru_en",
+                "fielddata": True
             }
         }
     }
@@ -229,7 +230,8 @@ GENRES_SCHEMA = {
             },
             "name": {
                 "type": "text",
-                "analyzer": "ru_en"
+                "analyzer": "ru_en",
+                "fielddata": True
             },
             "description": {
                 "type": "text",

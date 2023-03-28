@@ -2,11 +2,12 @@ from typing import Optional,  List
 from elasticsearch import AsyncElasticsearch, NotFoundError
 from redis.asyncio import Redis
 import json
-from services.utils.body_elastic import get_body_search
+
 
 
 class BaseService:
     """Класс реализует базовые функции для возможных сервисов."""
+
 
     def __init__(
             self,
@@ -15,6 +16,7 @@ class BaseService:
     ):
         self.redis = redis
         self.elastic = elastic
+        self.FILM_CACHE_EXPIRE_IN_SECONDS = 60 * 5
 
     async def get_data_by_id(
             self,
@@ -49,36 +51,21 @@ class BaseService:
             self,
             index: str,
             sort_by: str,
+            body: dict,
             ttl: int = 300,
             sort_order: str = 'desc',
             page_size: int = 50,
-            page_number: int = 1,
-            genre: str = None,
-            actor: str = None,
-            director: str = None,
-            writer: str = None,
+            page_number: int = 1
     ):
         """Метод возвращает список записей."""
 
         cache_key = f'{index}-{sort_by}-{sort_order}-{page_size}-{page_number}'
-        offset = (page_size * page_number) - page_size
 
         data = await self._data_from_cache(
             cache_key,
         )
         if not data:
-            body = get_body_search(
-                page_size,
-                sort_by,
-                offset,
-                sort_order,
-                genre,
-                actor,
-                director,
-                writer,
-            )
-
-            print(body, "!!!!!!!!!!!!")
+            body = body
 
             data = await self._search_in_elastic(
                 index,
