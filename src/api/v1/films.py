@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from http import HTTPStatus
 
-from services.film import FilmService, get_film_service
+from services.films import FilmService, get_film_service
 from models.film import FilmSort, FilmResponseModel, FilmModel
 
 router = APIRouter()
