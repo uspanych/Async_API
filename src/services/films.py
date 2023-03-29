@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Optional, List
+from typing import List, Optional
 
 from elasticsearch import AsyncElasticsearch
 from fastapi import Depends
@@ -7,7 +7,7 @@ from redis.asyncio import Redis
 
 from db.elastic import get_elastic
 from db.redis import get_redis
-from models.film import FilmModel, FilmSort, FilmResponseModel
+from models.films import FilmDetailResponseModel, FilmResponseModel, FilmSort
 from services.utils.body_elastic import get_body_search
 from .base import BaseService
 
@@ -16,16 +16,14 @@ class FilmService(BaseService):
     async def get_by_id(
             self,
             film_id,
-    ) -> Optional[FilmModel]:
+    ) -> Optional[FilmDetailResponseModel]:
         """Метод возвращает фильм по id."""
 
-        data = await self.get_data_by_id(
+        return await self.get_data_by_id(
             film_id,
             'movies',
             self.FILM_CACHE_EXPIRE_IN_SECONDS,
         )
-
-        return FilmModel(**data)
 
     async def get_film_list(
             self,
@@ -40,7 +38,6 @@ class FilmService(BaseService):
         """Метод возвращает список фильмов."""
 
         sort_order = 'desc' if sort_by == 'imdb_rating' else 'asc'
-
         body = get_body_search(
             size=page_size,
             sort_by='imdb_rating',

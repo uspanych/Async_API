@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional,  List
 from elasticsearch import AsyncElasticsearch, NotFoundError
 from redis.asyncio import Redis
 import json
@@ -54,7 +54,7 @@ class BaseService:
             ttl: int = 300,
             sort_order: str = 'desc',
             page_size: int = 50,
-            page_number: int = 1,
+            page_number: int = 1
     ):
         """Метод возвращает список записей."""
 
