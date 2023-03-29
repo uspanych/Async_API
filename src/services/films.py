@@ -57,6 +57,10 @@ class FilmService(BaseService):
             body=body,
             page_size=page_size,
             page_number=page_number,
+            genre=genre,
+            actor=actor,
+            director=director,
+            writer=writer
         )
 
         return data_list

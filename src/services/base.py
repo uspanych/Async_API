@@ -4,10 +4,8 @@ from redis.asyncio import Redis
 import json
 
 
-
 class BaseService:
     """Класс реализует базовые функции для возможных сервисов."""
-
 
     def __init__(
             self,
@@ -55,11 +53,15 @@ class BaseService:
             ttl: int = 300,
             sort_order: str = 'desc',
             page_size: int = 50,
-            page_number: int = 1
+            page_number: int = 1,
+            genre: str = None,
+            actor: str = None,
+            director: str = None,
+            writer: str = None,
     ):
         """Метод возвращает список записей."""
 
-        cache_key = f'{index}-{sort_by}-{sort_order}-{page_size}-{page_number}'
+        cache_key = f'{index}-{sort_by}-{sort_order}-{page_size}-{page_number}-{genre}-{actor}-{director}-{writer}'
 
         data = await self._data_from_cache(
             cache_key,
