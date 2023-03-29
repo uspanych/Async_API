@@ -9,8 +9,7 @@ from redis.asyncio import Redis
 from api.v1 import films
 from core import config
 from core.logger import LOGGING
-from db import elastic
-from db import redis
+from db import elastic, redis
 
 app = FastAPI(
     title=config.PROJECT_NAME,
@@ -37,8 +36,8 @@ app.include_router(films.router, prefix='/api/v1/films', tags=['films'])
 if __name__ == '__main__':
     uvicorn.run(
         'main:app',
-        host='0.0.0.0',
-        port=8000,
+        host=config.HOST,
+        port=config.PORT,
         log_config=LOGGING,
         log_level=logging.DEBUG,
     )
