@@ -2,11 +2,12 @@ from typing import Optional,  List
 from elasticsearch import AsyncElasticsearch, NotFoundError
 from redis.asyncio import Redis
 import json
-from services.utils.body_elastic import get_body_search
+
 
 
 class BaseService:
     """Класс реализует базовые функции для возможных сервисов."""
+
 
     def __init__(
             self,

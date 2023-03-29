@@ -3,8 +3,8 @@ from typing import Optional, List, Union
 import logging
 from psycopg2.extensions import connection as _connection
 
-from etl.services.backoff import backoff
-from etl.services.state import JsonFileStorage, State
+from services.backoff import backoff
+from services.state import JsonFileStorage, State
 from .models import PostgresModel, ToElasticModel, PersonModel, GenreModel
 from .queries import get_modified_person, get_modified_filmwork, get_filmwork_by_id, get_modified_genre
 
