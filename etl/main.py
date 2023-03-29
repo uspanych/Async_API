@@ -46,7 +46,7 @@ def etl(
         time.sleep(time_pause)
 
 
-# @backoff()
+@backoff()
 def pg_connect(
         dsl: dict
 ):

@@ -41,7 +41,7 @@ class PostgresExtract:
             key,
         )
 
-    # @backoff()
+    @backoff()
     def execute(
             self,
             query,

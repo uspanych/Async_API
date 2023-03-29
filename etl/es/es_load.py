@@ -36,7 +36,7 @@ class ElasticService:
             'persons': PERSONS_SCHEMA,
         }
 
-    # @backoff()
+    @backoff()
     def check_schema(self):
         if not self.client.ping():
             raise ConnectionError('No connection to Elasticsearch')
@@ -54,7 +54,7 @@ class ElasticService:
         logger.info('Create Index ElasticService')
         self.client.indices.create(index=index, body=self.schema.get(index))
 
-    # @backoff()
+    @backoff()
     def load_data_to_es(
             self,
             data: list,
