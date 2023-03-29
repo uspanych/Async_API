@@ -9,7 +9,6 @@ from db.elastic import get_elastic
 from db.redis import get_redis
 from models.films import FilmDetailResponseModel, FilmResponseModel, FilmSort
 from services.utils.body_elastic import get_body_search
-
 from .base import BaseService
 
 
@@ -53,9 +52,9 @@ class FilmService(BaseService):
         data_list = await self.get_list(
             index='movies',
             sort_by='imdb_rating',
-            body=body,
-            ttl=self.FILM_CACHE_EXPIRE_IN_SECONDS,
             sort_order=sort_order,
+            ttl=self.FILM_CACHE_EXPIRE_IN_SECONDS,
+            body=body,
             page_size=page_size,
             page_number=page_number,
         )
