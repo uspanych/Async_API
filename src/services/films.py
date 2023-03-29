@@ -60,13 +60,9 @@ class FilmService(BaseService):
             body=body,
             page_size=page_size,
             page_number=page_number,
-            genre=genre,
-            actor=actor,
-            director=director,
-            writer=writer,
         )
 
-        return [FilmResponseModel(**item) for item in data_list]
+        return data_list
 
 
 @lru_cache()
