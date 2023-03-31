@@ -1,0 +1,4 @@
+psycopg2-binary==2.9.5 
+flake8==6.0.0 
+elasticsearch==7.17.9 
+pydantic==1.10.5
