@@ -1,15 +1,12 @@
-from typing import Optional
-
-
 def get_body_search(
         size: int,
         sort_by: str,
         offset: int,
         sort_order: str,
-        genre: Optional[str] = None,
-        actor: Optional[str] = None,
-        director: Optional[str] = None,
-        writer: Optional[str] = None,
+        genre: str | None = None,
+        actor: str | None = None,
+        director: str | None = None,
+        writer: str | None = None,
 ):
     """Функция формирует тело запроса к ElasticSearch."""
 

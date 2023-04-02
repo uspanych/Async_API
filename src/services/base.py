@@ -1,4 +1,4 @@
-from typing import Optional,  List
+from typing import Optional
 from elasticsearch import AsyncElasticsearch, NotFoundError
 from redis.asyncio import Redis
 import json
@@ -88,7 +88,7 @@ class BaseService:
             self,
             index: str,
             body: str,
-    ) -> List[dict]:
+    ) -> list[dict]:
         """Метод осуществляет поиск в Elasticsearch."""
 
         data = await self.elastic.search(

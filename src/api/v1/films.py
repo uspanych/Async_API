@@ -1,33 +1,45 @@
 from http import HTTPStatus
-from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from models.films import FilmDetailResponseModel, FilmResponseModel, FilmSort
 from services.films import FilmService, get_film_service
+from services.utils.constants import FILM_NOT_FOUND
 
 router = APIRouter()
 
 
-@router.get('/{film_id}', response_model=FilmDetailResponseModel)
-async def film_details(film_id: str, film_service: FilmService = Depends(get_film_service)) -> FilmDetailResponseModel:
+@router.get(
+    '/{film_id}',
+    response_model=FilmDetailResponseModel,
+    description="Метод, возвращающий фильм по его id"
+)
+async def film_details(
+    film_id: str,
+    film_service: FilmService = Depends(get_film_service)
+) -> FilmDetailResponseModel:
     film = await film_service.get_by_id(film_id)
     if not film:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='film not found')
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND,
+                            detail=FILM_NOT_FOUND)
     return film
 
 
-@router.get('/', response_model=List[FilmResponseModel])
+@router.get(
+    '/',
+    response_model=list[FilmResponseModel],
+    description="Метод, возвращающий список всех фильмов"
+)
 async def films_list(
-        page_size: int,
-        page_number: int,
-        genre: Optional[str] = None,
-        actor: Optional[str] = None,
-        writer: Optional[str] = None,
-        director: Optional[str] = None,
+        page_size: int = Query(..., gt=0),
+        page_number: int = Query(..., gt=0),
+        genre: str | None = None,
+        actor: str | None = None,
+        writer: str | None = None,
+        director: str | None = None,
         sort_by: FilmSort = FilmSort.down_imdb_rating,
         film_service: FilmService = Depends(get_film_service),
-) -> List[FilmResponseModel]:
+) -> list[FilmResponseModel]:
     films = await film_service.get_film_list(
         page_size=page_size,
         page_number=page_number,

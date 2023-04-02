@@ -1,5 +1,4 @@
 from functools import lru_cache
-from typing import List, Optional
 
 from elasticsearch import AsyncElasticsearch
 from fastapi import Depends
@@ -16,7 +15,7 @@ class FilmService(BaseService):
     async def get_by_id(
             self,
             film_id,
-    ) -> Optional[FilmDetailResponseModel]:
+    ) -> FilmDetailResponseModel | None:
         """Метод возвращает фильм по id."""
 
         return await self.get_data_by_id(
@@ -34,7 +33,7 @@ class FilmService(BaseService):
             actor: str = None,
             director: str = None,
             writer: str = None,
-    ) -> List[Optional[FilmResponseModel]]:
+    ) -> list[FilmResponseModel | None]:
         """Метод возвращает список фильмов."""
 
         sort_order = 'desc' if sort_by == 'imdb_rating' else 'asc'

@@ -10,7 +10,7 @@ class GenreResponseModel(BaseOrjsonModel):
 
 
 class GenreDetailResponseModel(GenreResponseModel):
-    description: Optional[str]
+    description: str | None
 
 
 class GenreSort(str, Enum):
