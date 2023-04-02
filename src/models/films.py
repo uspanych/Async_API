@@ -1,24 +1,22 @@
 from enum import Enum
-from typing import List, Optional
 
 from models.base import BaseOrjsonModel
-
 
 
 class FilmResponseModel(BaseOrjsonModel):
     id: str
     title: str
-    imdb_rating: Optional[float] = None
+    imdb_rating: float | None = None
 
 
 class FilmDetailResponseModel(FilmResponseModel):
-    genres: Optional[List[dict]] = None
-    description: Optional[str] = None
-    directors: Optional[List[str]] = None
-    actors_names: Optional[List[str]] = None
-    writers_names: Optional[List[str]] = None
-    actors: Optional[List[dict]] = None
-    writers: Optional[List[dict]] = None
+    genres: list[dict] | None = None
+    description: str | None = None
+    directors: list[str] | None = None
+    actors_names: list[str] | None = None
+    writers_names: list[str] | None = None
+    actors: list[dict] | None = None
+    writers: list[dict] | None = None
 
 
 class FilmSort(str, Enum):

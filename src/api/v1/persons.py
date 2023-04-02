@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 
 from models.persons import Person, PersonSort
 from services.persons import PersonService, get_person_service
@@ -6,10 +6,10 @@ from services.persons import PersonService, get_person_service
 router = APIRouter()
 
 
-@router.get('/', response_model=list[Person])
+@router.get('/', response_model=list[Person], description="Метод, возвращающий список персон")
 async def persons_list(
-    page_size: int,
-    page_number: int,
+    page_size: int = Query(..., gt=0),
+    page_number: int = Query(..., gt=0),
     sort_by: PersonSort = PersonSort.down_full_name,
     genre_service: PersonService = Depends(get_person_service),
 ) -> list[Person]:
