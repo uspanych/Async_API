@@ -1,3 +1,78 @@
+
+def get_body_search_with_films(
+        value: str,
+        field: str,
+        size: int = None,
+        offset: int = None,
+):
+
+    query = {
+        'query': {
+            'bool': {
+                'should': [
+                    {
+                        'nested': {
+                            'path': 'directors',
+                            'query': {
+                                'bool': {
+                                    'must': [
+                                        {
+                                            'match': {
+                                                f'directors.{field}': value
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    {
+                        'nested': {
+                            'path': 'actors',
+                            'query': {
+                                'bool': {
+                                    'must': [
+                                        {
+                                            'match': {
+                                                f'actors.{field}': value
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    {
+                        'nested': {
+                            'path': 'writers',
+                            'query': {
+                                'bool': {
+                                    'must': [
+                                        {
+                                            'match': {
+                                                f'writers.{field}': value
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+    if (size and offset) is not None:
+        return {
+            'query': query,
+            "from": offset,
+            "size": size,
+        }
+    else:
+        return query
+
+
 def get_body_search(
         size: int,
         sort_by: str,
@@ -72,17 +147,35 @@ def get_body_search(
     }
 
 
+def get_body_query(
+        field: str,
+        value: str,
+) -> dict:
+    query = {
+        "query": {
+            "match": {
+                f"{field}": {
+                    "query": f"{value}",
+                    "fuzziness": "auto"
+                }
+            }
+        }
+    }
+
+    return query
+
+
 def _get_query(
         fields: list
 ) -> dict:
     query = {
-            "bool": {
-                "must": [
-                ]
-            }
+        "bool": {
+            "should": [
+            ]
+        }
     }
     for item in fields:
-        query['bool']['must'].append(
+        query['bool']['should'].append(
             _get_nested(
                 item.get('field'),
                 item.get('id'),

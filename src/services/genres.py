@@ -14,11 +14,13 @@ from .base import BaseService
 
 
 class GenreService(BaseService):
+    """Метод реализует возможность получения жанров."""
+
     async def get_by_id(
             self,
             genre_id: str,
     ) -> GenreDetailResponseModel | None:
-        """Метод возвращает фильм по id."""
+        """Метод возвращает жанр по id."""
 
         data = await self.get_data_by_id(
             genre_id,
@@ -34,6 +36,8 @@ class GenreService(BaseService):
             page_size: int = 50,
             page_number: int = 1
     ) -> list[GenreResponseModel] | None:
+        """Метод возвращает список жанров."""
+
         sort_order = 'desc' if sort_by == 'name' else 'asc'
         body = get_body_search(
             size=page_size,

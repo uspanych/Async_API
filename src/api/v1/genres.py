@@ -24,7 +24,11 @@ async def genre_details(genre_id: str, genre_service: GenreService = Depends(get
     return genre
 
 
-@router.get('/', response_model=list[GenreResponseModel], description="Метод, возвращающий список жанров")
+@router.get(
+    '/',
+    response_model=list[GenreResponseModel],
+    description="Метод, возвращающий список жанров"
+)
 async def films_list(
     page_size: int = Query(..., gt=0),
     page_number: int = Query(..., gt=0),

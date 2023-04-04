@@ -16,7 +16,9 @@ class Settings(BaseSettings):
     REDIS_PORT: int = Field(..., env='REDIS_PORT')
     ELASTIC_HOST: str = Field(..., env='ELASTIC_HOST')
     ELASTIC_PORT: int = Field(..., env='ELASTIC_PORT')
+
     class Config:
         env_file = '.env'
+
 
 settings = Settings()

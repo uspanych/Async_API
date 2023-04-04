@@ -10,6 +10,27 @@ router = APIRouter()
 
 
 @router.get(
+    '/search',
+    response_model=list[FilmResponseModel],
+    description="Метод, возвращающий список найденных фильмов",
+)
+async def films_query_list(
+        query: str,
+        page_size: int = Query(..., gt=0),
+        page_number: int = Query(..., gt=0),
+        film_service: FilmService = Depends(get_film_service)
+) -> list[FilmResponseModel]:
+
+    films = await film_service.search_film_by_query(
+        page_size=page_size,
+        page_number=page_number,
+        query=query,
+    )
+
+    return films
+
+
+@router.get(
     '/{film_id}',
     response_model=FilmDetailResponseModel,
     description="Метод, возвращающий фильм по его id"
@@ -40,6 +61,7 @@ async def films_list(
         sort_by: FilmSort = FilmSort.down_imdb_rating,
         film_service: FilmService = Depends(get_film_service),
 ) -> list[FilmResponseModel]:
+
     films = await film_service.get_film_list(
         page_size=page_size,
         page_number=page_number,

@@ -12,7 +12,7 @@ class FilmResponseModel(BaseOrjsonModel):
 class FilmDetailResponseModel(FilmResponseModel):
     genres: list[dict] | None = None
     description: str | None = None
-    directors: list[str] | None = None
+    directors: list[dict] | None = None
     actors_names: list[str] | None = None
     writers_names: list[str] | None = None
     actors: list[dict] | None = None

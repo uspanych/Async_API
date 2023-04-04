@@ -48,8 +48,8 @@ class BaseService:
     async def get_list(
             self,
             index: str,
-            sort_by: str,
-            body: dict,
+            body: str,
+            sort_by: str = None,
             ttl: int = 300,
             sort_order: str = 'desc',
             page_size: int = 50,
@@ -58,17 +58,50 @@ class BaseService:
             actor: str = None,
             director: str = None,
             writer: str = None,
+            unique_key: str = None
     ):
         """Метод возвращает список записей."""
 
-        cache_key = f'{index}-{sort_by}-{sort_order}-{page_size}-{page_number}-{genre}-{actor}-{director}-{writer}'
+        cache_key = f'{index}-{sort_by}-{sort_order}-{page_size}-{page_number}-{genre}-{actor}-{director}-{writer}' \
+                    f'-{unique_key}'
 
         data = await self._data_from_cache(
             cache_key,
         )
         if not data:
-            body = body
+            data = await self._search_in_elastic(
+                index,
+                body,
+            )
+            if not data:
+                return []
 
+            await self._put_data_to_cache(
+                cache_key,
+                json.dumps(data),
+                ttl,
+            )
+
+        return data
+
+    async def search_by_query(
+            self,
+            index: str,
+            body: str,
+            query: str,
+            ttl: int = 300,
+            page_size: int = 50,
+            page_number: int = 1,
+    ):
+        """Метод осуществляет поиск записей по query."""
+
+        cache_key = f'{index}-{query}-{ttl}-{page_size}-{page_number}'
+
+        data = await self._data_from_cache(
+            cache_key,
+        )
+
+        if not data:
             data = await self._search_in_elastic(
                 index,
                 body,
