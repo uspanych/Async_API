@@ -10,8 +10,6 @@ from pydantic import BaseSettings, Field
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = Field(..., env='PROJECT_NAME')
-    HOST: str = Field(..., env='HOST')
-    PORT: int = Field(..., env='PORT')
     REDIS_HOST: str = Field(..., env='REDIS_HOST')
     REDIS_PORT: int = Field(..., env='REDIS_PORT')
     ELASTIC_HOST: str = Field(..., env='ELASTIC_HOST')
