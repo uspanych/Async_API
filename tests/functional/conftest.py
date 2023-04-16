@@ -5,9 +5,12 @@ from typing import List
 import pytest
 import pytest_asyncio
 import asyncio
+from redis.asyncio import Redis
+from functional.testdata.schemes import GENRES_SCHEMA, MOVIES_SCHEMA, PERSONS_SCHEMA
+from functional.testdata.es_data import get_es_data
 
 
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 def event_loop():
     loop = asyncio.get_event_loop()
     yield loop
@@ -21,28 +24,42 @@ async def es_client():
     await es_client.close()
 
 
+@pytest_asyncio.fixture(scope='session')
+async def re_client():
+    re_client = Redis(host=test_settings.redis_host, port=test_settings.redis_port)
+    yield re_client
+    await re_client.close()
+
+
 @pytest_asyncio.fixture
 async def es_create_scheme(es_client):
     async def inner(
-            scheme: str,
-            index: str,
     ):
         await es_client.indices.create(
-            index=index,
-            body=scheme,
+            index='movies',
+            body=MOVIES_SCHEMA,
+        )
+        await es_client.indices.create(
+            index='genres',
+            body=GENRES_SCHEMA,
+        )
+        await es_client.indices.create(
+            index='persons',
+            body=PERSONS_SCHEMA,
         )
 
     return inner
 
 
 @pytest_asyncio.fixture
-async def es_write_data(es_client):
+async def es_write_data(es_client, re_client):
     async def inner(
-            index: str,
             data: List[dict]
     ):
         document = []
         for item in data:
+            print(item)
+            index = item.pop('index')
             document.append(
                 {
                     "_index": index,
@@ -53,16 +70,11 @@ async def es_write_data(es_client):
 
         await async_bulk(es_client, document)
 
-    return inner
+        for _index in test_settings.es_index.split(', '):
+            await es_client.indices.delete(
+                index=_index,
+            )
 
-
-@pytest_asyncio.fixture
-async def es_delete_scheme(es_client):
-    async def inner(
-            index: str,
-    ):
-        await es_client.indices.delete(
-            index=index,
-        )
+        await re_client.flushdb()
 
     return inner

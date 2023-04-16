@@ -61,16 +61,6 @@ class ElasticService:
     ):
         self.check_schema()
 
-        """
-        document = [
-            {
-                "_index": item.index,
-                "_id": item.id,
-                "_source": item.dict()
-            }
-            for item in data
-        ]
-        """
         document = []
 
         for item in data:
