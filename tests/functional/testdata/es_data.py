@@ -2,7 +2,8 @@ import uuid
 
 
 def get_es_data():
-    return [{
+    movies = [{
+        'index': 'movies',
         'id': str(uuid.uuid4()),
         'imdb_rating': 8.5,
         'genres': [
@@ -27,3 +28,38 @@ def get_es_data():
         ],
 
     } for _ in range(60)]
+
+    genres = [
+        {
+            'index': 'genres',
+            'id': str(uuid.uuid4()),
+            'name': 'Action',
+            'description': 'Some test description!'
+        },
+        {
+            'index': 'genres',
+            'id': str(uuid.uuid4()),
+            'name': 'Sci-Fi',
+            'description': 'Tsoy is alive!'
+        }
+    ]
+
+    persons = [
+        {
+            'index': 'persons',
+            'id': str(uuid.uuid4()),
+            'full_name': 'Bob Marley',
+        },
+        {
+            'index': 'persons',
+            'id': str(uuid.uuid4()),
+            'full_name': 'Stive Jobs',
+        },
+        {
+            'index': 'persons',
+            'id': str(uuid.uuid4()),
+            'full_name': 'Kelvin Clein'
+        }
+    ]
+
+    return movies + genres + persons
