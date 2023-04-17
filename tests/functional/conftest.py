@@ -1,8 +1,6 @@
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
 from functional.settings import test_settings
-from typing import List
-import pytest
 import pytest_asyncio
 import asyncio
 from redis.asyncio import Redis
@@ -53,28 +51,25 @@ async def es_create_scheme(es_client):
 
 @pytest_asyncio.fixture
 async def es_write_data(es_client, re_client):
-    async def inner(
-            data: List[dict]
-    ):
-        document = []
-        for item in data:
-            print(item)
-            index = item.pop('index')
-            document.append(
-                {
-                    "_index": index,
-                    "_id": item.get('id'),
-                    "_source": item,
-                }
-            )
+    documents = []
+    test_data = get_es_data()
+    for item in test_data:
+        index = item.pop('index')
+        documents.append(
+            {
+                "_index": index,
+                "_id": item.get('id'),
+                "_source": item,
+            }
+        )
 
-        await async_bulk(es_client, document)
+    await async_bulk(es_client, documents)
 
-        for _index in test_settings.es_index.split(', '):
-            await es_client.indices.delete(
-                index=_index,
-            )
+    yield
 
-        await re_client.flushdb()
+    for _index in test_settings.es_index.split(', '):
+        await es_client.indices.delete(
+            index=_index,
+        )
 
-    return inner
+    await re_client.flushdb()
