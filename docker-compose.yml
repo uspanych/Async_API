@@ -41,6 +41,7 @@ services:
       timeout: 10s
       retries: 50
 
+
   redis:
     image: redis:latest
     networks:
@@ -51,22 +52,6 @@ services:
       timeout: 10s
       retries: 50
 
-  db:
-    image: postgres:13-alpine
-    restart: always
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_NAME}
-    volumes:
-       - ./postgres:/data/postgres
-    networks:
-      - backend
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-      interval: 5s
-      timeout: 5s
-      retries: 50
 
 networks:
   backend:

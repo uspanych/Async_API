@@ -30,8 +30,8 @@ async def genre_details(genre_id: str, genre_service: GenreService = Depends(get
     description="Метод, возвращающий список жанров"
 )
 async def films_list(
-    page_size: int = Query(..., gt=0),
-    page_number: int = Query(..., gt=0),
+    page_size: int = Query(50, gt=0),
+    page_number: int = Query(1, gt=0),
     sort_by: GenreSort = GenreSort.down_name,
     genre_service: GenreService = Depends(get_genre_service),
 ) -> list[GenreResponseModel]:

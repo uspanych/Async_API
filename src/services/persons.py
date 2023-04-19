@@ -123,6 +123,8 @@ class PersonService(BaseService):
         body_person = get_body_query(
             field='full_name',
             value=query,
+            size=page_size,
+            offset=(page_size * page_number) - page_size,
         )
 
         data_list_person = await self.get_list(

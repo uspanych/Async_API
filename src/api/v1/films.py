@@ -16,8 +16,8 @@ router = APIRouter()
 )
 async def films_query_list(
         query: str,
-        page_size: int = Query(..., gt=0),
-        page_number: int = Query(..., gt=0),
+        page_size: int = Query(50, gt=0),
+        page_number: int = Query(1, gt=0),
         film_service: FilmService = Depends(get_film_service)
 ) -> list[FilmResponseModel]:
 
@@ -52,8 +52,8 @@ async def film_details(
     description="Метод, возвращающий список всех фильмов"
 )
 async def films_list(
-        page_size: int = Query(..., gt=0),
-        page_number: int = Query(..., gt=0),
+        page_size: int = Query(50, gt=0),
+        page_number: int = Query(1, gt=0),
         genre: str | None = None,
         actor: str | None = None,
         writer: str | None = None,
