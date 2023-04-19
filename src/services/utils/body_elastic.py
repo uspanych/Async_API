@@ -150,6 +150,8 @@ def get_body_search(
 def get_body_query(
         field: str,
         value: str,
+        offset: int,
+        size: int,
 ) -> dict:
     query = {
         "query": {
@@ -159,7 +161,9 @@ def get_body_query(
                     "fuzziness": "auto"
                 }
             }
-        }
+        },
+        "from": offset,
+        "size": size,
     }
 
     return query

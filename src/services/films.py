@@ -81,6 +81,8 @@ class FilmService(BaseService):
         body = get_body_query(
             field='title',
             value=query,
+            size=page_size,
+            offset=(page_size * page_number) - page_size,
         )
 
         data_list = await self.search_by_query(

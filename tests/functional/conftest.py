@@ -29,28 +29,24 @@ async def re_client():
     await re_client.close()
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture()
 async def es_create_scheme(es_client):
-    async def inner(
-    ):
-        await es_client.indices.create(
-            index='movies',
-            body=MOVIES_SCHEMA,
-        )
-        await es_client.indices.create(
-            index='genres',
-            body=GENRES_SCHEMA,
-        )
-        await es_client.indices.create(
-            index='persons',
-            body=PERSONS_SCHEMA,
-        )
-
-    return inner
+    await es_client.indices.create(
+        index='movies',
+        body=MOVIES_SCHEMA,
+    )
+    await es_client.indices.create(
+        index='genres',
+        body=GENRES_SCHEMA,
+    )
+    await es_client.indices.create(
+        index='persons',
+        body=PERSONS_SCHEMA,
+    )
 
 
 @pytest_asyncio.fixture
-async def es_write_data(es_client, re_client):
+async def es_write_data(es_client, re_client, es_create_scheme):
     documents = []
     test_data = get_es_data()
     for item in test_data:

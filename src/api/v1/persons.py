@@ -15,8 +15,8 @@ router = APIRouter()
 )
 async def search_person(
         query: str,
-        page_size: int = Query(..., gt=0),
-        page_number: int = Query(..., gt=0),
+        page_size: int = Query(50, gt=0),
+        page_number: int = Query(1, gt=0),
         person_service: PersonService = Depends(get_person_service)
 ) -> list[PersonPage]:
 
@@ -52,8 +52,8 @@ async def films_persons(
     description="Метод, возвращающий список персон"
 )
 async def persons_list(
-        page_size: int = Query(..., gt=0),
-        page_number: int = Query(..., gt=0),
+        page_size: int = Query(50, gt=0),
+        page_number: int = Query(1, gt=0),
         sort_by: PersonSort = PersonSort.down_full_name,
         person_service: PersonService = Depends(get_person_service),
 ) -> list[Person]:
