@@ -60,6 +60,7 @@ async def es_write_data(es_client, re_client, es_create_scheme):
         )
 
     await async_bulk(es_client, documents)
+    await es_client.indices.refresh()
 
     yield
 
