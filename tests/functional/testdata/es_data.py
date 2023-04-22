@@ -32,13 +32,13 @@ def get_es_data():
     genres = [
         {
             'index': 'genres',
-            'id': str(uuid.uuid4()),
+            'id': '679',
             'name': 'Action',
             'description': 'Some test description!'
         },
         {
             'index': 'genres',
-            'id': str(uuid.uuid4()),
+            'id': '566',
             'name': 'Sci-Fi',
             'description': 'Tsoy is alive!'
         }
@@ -47,17 +47,17 @@ def get_es_data():
     persons = [
         {
             'index': 'persons',
-            'id': str(uuid.uuid4()),
+            'id': '3',
             'full_name': 'Bob Marley',
         },
         {
             'index': 'persons',
-            'id': str(uuid.uuid4()),
+            'id': '2',
             'full_name': 'Stive Jobs',
         },
         {
             'index': 'persons',
-            'id': str(uuid.uuid4()),
+            'id': '4',
             'full_name': 'Kelvin Clein'
         }
     ]
