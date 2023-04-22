@@ -13,17 +13,17 @@ def get_es_data():
         'title': 'The Star',
         'description': 'New World',
         'directors': [
-            {'id': '123', 'name': 'Bib'},
+            {'id': '123', 'name': 'Biba'},
             {'id': '112', 'name': 'Boba'},
         ],
-        'actors_names': ['Ann', 'Bob'],
-        'writers_names': ['Ben', 'Howard'],
+        'actors_names': ['Stive Jobs', 'Bob Marley'],
+        'writers_names': ['Kelvin Clein', 'Howard'],
         'actors': [
-            {'id': '111', 'name': 'Ann'},
-            {'id': '222', 'name': 'Bob'}
+            {'id': '111', 'name': 'Stive Jobs'},
+            {'id': '222', 'name': 'Bob Marley'}
         ],
         'writers': [
-            {'id': '333', 'name': 'Ben'},
+            {'id': '333', 'name': 'Kelvin Clein'},
             {'id': '444', 'name': 'Howard'}
         ],
 
@@ -47,18 +47,33 @@ def get_es_data():
     persons = [
         {
             'index': 'persons',
-            'id': '3',
+            'id': '222',
             'full_name': 'Bob Marley',
         },
         {
             'index': 'persons',
-            'id': '2',
+            'id': '111',
             'full_name': 'Stive Jobs',
         },
         {
             'index': 'persons',
-            'id': '4',
+            'id': '333',
             'full_name': 'Kelvin Clein'
+        },
+        {
+            'index': 'persons',
+            'id': '444',
+            'full_name': 'Howard'
+        },
+        {
+            'index': 'persons',
+            'id': '123',
+            'full_name': 'Biba'
+        },
+        {
+            'index': 'persons',
+            'id': '112',
+            'full_name': 'Boba'
         }
     ]
 
