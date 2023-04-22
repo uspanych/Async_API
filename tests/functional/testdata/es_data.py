@@ -4,7 +4,7 @@ import uuid
 def get_es_data():
     movies = [{
         'index': 'movies',
-        'id': str(uuid.uuid4()),
+        'id': str(uuid.uuid4()) if i != 0 else "1f90980e-e7c9-4fac-a1e4-f34409daeff2",
         'imdb_rating': 8.5,
         'genres': [
             {'id': '565', 'name': 'Sci-Fi'},
@@ -27,7 +27,7 @@ def get_es_data():
             {'id': '444', 'name': 'Howard'}
         ],
 
-    } for _ in range(60)]
+    } for i in range(60)]
 
     genres = [
         {

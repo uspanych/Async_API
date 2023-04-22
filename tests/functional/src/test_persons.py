@@ -114,4 +114,3 @@ async def test_person_search(es_write_data, query_data, expected_answer):
 
 
     await session.close()
-
