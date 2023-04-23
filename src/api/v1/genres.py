@@ -1,7 +1,9 @@
 from http import HTTPStatus
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 
+from models.base import PaginateQueryParams
 from models.genres import (GenreDetailResponseModel, GenreResponseModel,
                            GenreSort)
 from services.genres import GenreService, get_genre_service
@@ -30,15 +32,14 @@ async def genre_details(genre_id: str, genre_service: GenreService = Depends(get
     description="Метод, возвращающий список жанров"
 )
 async def films_list(
-    page_size: int = Query(50, gt=0),
-    page_number: int = Query(1, gt=0),
+    pagination: Annotated[PaginateQueryParams, Depends(PaginateQueryParams)],
     sort_by: GenreSort = GenreSort.down_name,
     genre_service: GenreService = Depends(get_genre_service),
 ) -> list[GenreResponseModel]:
 
     films = await genre_service.get_genres_list(
-        page_size=page_size,
-        page_number=page_number,
+        page_size=pagination.page_size,
+        page_number=pagination.page_number,
         sort_by=sort_by,
     )
 

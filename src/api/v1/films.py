@@ -1,10 +1,12 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 
 from models.films import FilmDetailResponseModel, FilmResponseModel, FilmSort
 from services.films import FilmService, get_film_service
 from services.utils.constants import FILM_NOT_FOUND
+from models.base import PaginateQueryParams
+from typing import Annotated
 
 router = APIRouter()
 
@@ -16,14 +18,13 @@ router = APIRouter()
 )
 async def films_query_list(
         query: str,
-        page_size: int = Query(50, gt=0),
-        page_number: int = Query(1, gt=0),
+        pagination: Annotated[PaginateQueryParams, Depends(PaginateQueryParams)],
         film_service: FilmService = Depends(get_film_service)
 ) -> list[FilmResponseModel]:
 
     films = await film_service.search_film_by_query(
-        page_size=page_size,
-        page_number=page_number,
+        page_size=pagination.page_size,
+        page_number=pagination.page_number,
         query=query,
     )
 
@@ -52,8 +53,7 @@ async def film_details(
     description="Метод, возвращающий список всех фильмов"
 )
 async def films_list(
-        page_size: int = Query(50, gt=0),
-        page_number: int = Query(1, gt=0),
+        pagination: Annotated[PaginateQueryParams, Depends(PaginateQueryParams)],
         genre: str | None = None,
         actor: str | None = None,
         writer: str | None = None,
@@ -63,8 +63,8 @@ async def films_list(
 ) -> list[FilmResponseModel]:
 
     films = await film_service.get_film_list(
-        page_size=page_size,
-        page_number=page_number,
+        page_size=pagination.page_size,
+        page_number=pagination.page_number,
         sort_by=sort_by,
         genre=genre,
         actor=actor,

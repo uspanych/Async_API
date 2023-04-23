@@ -4,6 +4,8 @@ from models.films import FilmResponseModel
 from models.persons import Person, PersonSort, PersonPage
 from services.persons import PersonService, get_person_service
 from services.utils.constants import FILM_NOT_FOUND
+from models.base import PaginateQueryParams
+from typing import Annotated
 
 router = APIRouter()
 
@@ -15,15 +17,14 @@ router = APIRouter()
 )
 async def search_person(
         query: str,
-        page_size: int = Query(50, gt=0),
-        page_number: int = Query(1, gt=0),
+        pagination: Annotated[PaginateQueryParams, Depends(PaginateQueryParams)],
         person_service: PersonService = Depends(get_person_service)
 ) -> list[PersonPage]:
 
     persons = await person_service.search_person_with_films(
         query=query,
-        page_size=page_size,
-        page_number=page_number,
+        page_size=pagination.page_size,
+        page_number=pagination.page_number,
     )
 
     return persons
@@ -52,14 +53,14 @@ async def films_persons(
     description="Метод, возвращающий список персон"
 )
 async def persons_list(
-        page_size: int = Query(50, gt=0),
-        page_number: int = Query(1, gt=0),
+        pagination: Annotated[PaginateQueryParams, Depends(PaginateQueryParams)],
         sort_by: PersonSort = PersonSort.down_full_name,
         person_service: PersonService = Depends(get_person_service),
 ) -> list[Person]:
+
     persons = await person_service.get_persons_list(
-        page_size=page_size,
-        page_number=page_number,
+        page_size=pagination.page_size,
+        page_number=pagination.page_number,
         sort_by=sort_by,
     )
 
@@ -73,6 +74,7 @@ async def persons_list(
 )
 async def person_details(person_id: str, person_service: PersonService = Depends(get_person_service)
                          ) -> Person:
+
     person = await person_service.get_by_id(person_id)
     if not person:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND,

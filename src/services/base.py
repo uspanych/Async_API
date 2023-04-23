@@ -1,7 +1,87 @@
-from typing import Optional
 from elasticsearch import AsyncElasticsearch, NotFoundError
 from redis.asyncio import Redis
 import json
+import abc
+
+
+class AbstractStorage(abc.ABC):
+    @abc.abstractmethod
+    async def get_by_id(self, *args, **kwargs):
+        ...
+
+    @abc.abstractmethod
+    async def search_data(self, *args, **kwargs):
+        ...
+
+
+class AbstractCache(abc.ABC):
+    @abc.abstractmethod
+    async def get_by_id(self, *args, **kwargs):
+        ...
+
+    async def set_by_id(self, *args, **kwargs):
+        ...
+
+
+class ElasticStorage(AbstractStorage):
+
+    def __init__(
+            self,
+            elastic: AsyncElasticsearch,
+    ):
+        self.elastic = elastic
+
+    async def get_by_id(
+            self,
+            *args,
+            **kwargs,
+    ):
+        try:
+            doc = await self.elastic.get(
+                index=kwargs.get('index'),
+                id=kwargs.get('data_id'),
+            )
+
+        except NotFoundError:
+            return None
+
+        return doc['_source']
+
+    async def search_data(
+            self,
+            *args,
+            **kwargs,
+    ) -> list[dict]:
+        """Метод осуществляет поиск в Elasticsearch."""
+
+        data = await self.elastic.search(
+            index=kwargs.get('index'),
+            body=kwargs.get('body'),
+        )
+
+        return [item['_source'] for item in data['hits']['hits']]
+
+
+class RedisCache(AbstractCache):
+    def __init__(
+            self,
+            redis: Redis,
+    ):
+        self.redis = redis
+
+    async def get_by_id(self, *args, **kwargs):
+        data = await self.redis.get(kwargs.get('key'))
+        if not data:
+            return None
+
+        return json.loads(data)
+
+    async def set_by_id(self, *args, **kwargs):
+        await self.redis.set(
+            kwargs.get('key'),
+            kwargs.get('value'),
+            kwargs.get('ttl'),
+        )
 
 
 class BaseService:
@@ -9,11 +89,11 @@ class BaseService:
 
     def __init__(
             self,
-            redis: Redis,
-            elastic: AsyncElasticsearch,
+            cache_handler: RedisCache,
+            storage_handler: ElasticStorage,
     ):
-        self.redis = redis
-        self.elastic = elastic
+        self.cache_handler = cache_handler
+        self.storage_handler = storage_handler
         self.FILM_CACHE_EXPIRE_IN_SECONDS = 60 * 5
 
     async def get_data_by_id(
@@ -25,19 +105,20 @@ class BaseService:
         """Метод возвращает запись по id."""
 
         cache_key = f'{data_id}-{index}'
-        data = await self._data_from_cache(
+        data = await self.cache_handler.get_by_id(
             cache_key,
         )
 
         if not data:
-            data = await self._get_from_elastic(
-                data_id,
-                index,
+            data = await self.storage_handler.get_by_id(
+                data_id=data_id,
+                index=index,
             )
+
             if not data:
                 return None
 
-            await self._put_data_to_cache(
+            await self.cache_handler.set_by_id(
                 cache_key,
                 json.dumps(data),
                 ttl,
@@ -65,18 +146,19 @@ class BaseService:
         cache_key = f'{index}-{sort_by}-{sort_order}-{page_size}-{page_number}-{genre}-{actor}-{director}-{writer}' \
                     f'-{unique_key}'
 
-        data = await self._data_from_cache(
+        data = await self.cache_handler.set_by_id(
             cache_key,
         )
         if not data:
-            data = await self._search_in_elastic(
-                index,
-                body,
+            data = await self.storage_handler.search_data(
+                index=index,
+                body=body,
             )
+
             if not data:
                 return []
 
-            await self._put_data_to_cache(
+            await self.cache_handler.get_by_id(
                 cache_key,
                 json.dumps(data),
                 ttl,
@@ -97,77 +179,23 @@ class BaseService:
 
         cache_key = f'{index}-{query}-{ttl}-{page_size}-{page_number}'
 
-        data = await self._data_from_cache(
+        data = await self.cache_handler.get_by_id(
             cache_key,
         )
 
         if not data:
-            data = await self._search_in_elastic(
-                index,
-                body,
+            data = await self.storage_handler.search_data(
+                index=index,
+                body=body,
             )
+
             if not data:
                 return []
 
-            await self._put_data_to_cache(
+            await self.cache_handler.set_by_id(
                 cache_key,
                 json.dumps(data),
                 ttl,
             )
 
         return data
-
-    async def _search_in_elastic(
-            self,
-            index: str,
-            body: str,
-    ) -> list[dict]:
-        """Метод осуществляет поиск в Elasticsearch."""
-
-        data = await self.elastic.search(
-            index=index,
-            body=body
-        )
-
-        return [item['_source'] for item in data['hits']['hits']]
-
-    async def _get_from_elastic(
-            self,
-            data_id: str,
-            index: str,
-    ) -> Optional[dict]:
-        """Метод осуществляет поиск в Elasticsearch по id."""
-
-        try:
-            doc = await self.elastic.get(index, data_id)
-
-        except NotFoundError:
-            return None
-
-        return doc['_source']
-
-    async def _data_from_cache(
-            self,
-            key: str
-    ) -> Optional[dict]:
-        """Метод возвращает данные из кеша."""
-
-        data = await self.redis.get(key)
-        if not data:
-            return None
-
-        return json.loads(data)
-
-    async def _put_data_to_cache(
-            self,
-            key: str,
-            value,
-            ttl: int,
-    ) -> None:
-        """Метод сохраняет данные в кеш."""
-
-        await self.redis.set(
-            key,
-            value,
-            ttl,
-        )

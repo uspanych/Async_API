@@ -51,8 +51,6 @@ class FilmService(BaseService):
             writer=writer
         )
 
-        pprint(body)
-
         data_list = await self.get_list(
             index='movies',
             sort_by='imdb_rating',
