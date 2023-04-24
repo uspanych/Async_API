@@ -2,6 +2,7 @@ from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
 from functional.settings import test_settings
 import pytest_asyncio
+import aiohttp
 import asyncio
 from redis.asyncio import Redis
 from functional.testdata.schemes import GENRES_SCHEMA, MOVIES_SCHEMA, PERSONS_SCHEMA
@@ -27,6 +28,13 @@ async def re_client():
     re_client = Redis(host=test_settings.redis_host, port=test_settings.redis_port)
     yield re_client
     await re_client.close()
+
+
+@pytest_asyncio.fixture(scope='session')
+async def client_session():
+    client_session = aiohttp.ClientSession()
+    yield client_session
+    await client_session.close()
 
 
 @pytest_asyncio.fixture()
