@@ -12,6 +12,9 @@ from services.utils.constants import FILM_NOT_FOUND
 router = APIRouter()
 
 
+PaginateQuery = Annotated[PaginateQueryParams, Depends(PaginateQueryParams)]
+
+
 @router.get(
     "/{genre_id}",
     response_model=GenreDetailResponseModel,
@@ -32,7 +35,7 @@ async def genre_details(genre_id: str, genre_service: GenreService = Depends(get
     description="Метод, возвращающий список жанров"
 )
 async def films_list(
-    pagination: Annotated[PaginateQueryParams, Depends(PaginateQueryParams)],
+    pagination: PaginateQuery,
     sort_by: GenreSort = GenreSort.down_name,
     genre_service: GenreService = Depends(get_genre_service),
 ) -> list[GenreResponseModel]:

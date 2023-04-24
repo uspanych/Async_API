@@ -1,5 +1,4 @@
 from functools import lru_cache
-from pprint import pprint
 
 from elasticsearch import AsyncElasticsearch
 from fastapi import Depends
@@ -9,7 +8,7 @@ from db.elastic import get_elastic
 from db.redis import get_redis
 from models.films import FilmDetailResponseModel, FilmResponseModel, FilmSort
 from services.utils.body_elastic import get_body_search, get_body_query
-from .base import BaseService
+from .base import BaseService, ElasticStorage, RedisCache
 
 
 class FilmService(BaseService):
@@ -98,6 +97,6 @@ class FilmService(BaseService):
 @lru_cache()
 def get_film_service(
         redis: Redis = Depends(get_redis),
-        elastic: AsyncElasticsearch = Depends(get_elastic),
+        elastic: AsyncElasticsearch = Depends(get_elastic)
 ) -> FilmService:
-    return FilmService(redis, elastic)
+    return FilmService(RedisCache(redis), ElasticStorage(elastic))

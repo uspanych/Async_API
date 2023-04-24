@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from http import HTTPStatus
 from models.films import FilmResponseModel
 from models.persons import Person, PersonSort, PersonPage
@@ -9,6 +9,8 @@ from typing import Annotated
 
 router = APIRouter()
 
+PaginateQuery = Annotated[PaginateQueryParams, Depends(PaginateQueryParams)]
+
 
 @router.get(
     '/persons/search',
@@ -17,7 +19,7 @@ router = APIRouter()
 )
 async def search_person(
         query: str,
-        pagination: Annotated[PaginateQueryParams, Depends(PaginateQueryParams)],
+        pagination: PaginateQuery,
         person_service: PersonService = Depends(get_person_service)
 ) -> list[PersonPage]:
 
@@ -53,7 +55,7 @@ async def films_persons(
     description="Метод, возвращающий список персон"
 )
 async def persons_list(
-        pagination: Annotated[PaginateQueryParams, Depends(PaginateQueryParams)],
+        pagination: PaginateQuery,
         sort_by: PersonSort = PersonSort.down_full_name,
         person_service: PersonService = Depends(get_person_service),
 ) -> list[Person]:

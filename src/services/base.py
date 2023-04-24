@@ -106,7 +106,7 @@ class BaseService:
 
         cache_key = f'{data_id}-{index}'
         data = await self.cache_handler.get_by_id(
-            cache_key,
+            key=cache_key,
         )
 
         if not data:
@@ -119,9 +119,9 @@ class BaseService:
                 return None
 
             await self.cache_handler.set_by_id(
-                cache_key,
-                json.dumps(data),
-                ttl,
+                key=cache_key,
+                value=json.dumps(data),
+                ttl=ttl,
             )
 
         return data
@@ -146,8 +146,8 @@ class BaseService:
         cache_key = f'{index}-{sort_by}-{sort_order}-{page_size}-{page_number}-{genre}-{actor}-{director}-{writer}' \
                     f'-{unique_key}'
 
-        data = await self.cache_handler.set_by_id(
-            cache_key,
+        data = await self.cache_handler.get_by_id(
+            key=cache_key,
         )
         if not data:
             data = await self.storage_handler.search_data(
@@ -158,10 +158,10 @@ class BaseService:
             if not data:
                 return []
 
-            await self.cache_handler.get_by_id(
-                cache_key,
-                json.dumps(data),
-                ttl,
+            await self.cache_handler.set_by_id(
+                key=cache_key,
+                value=json.dumps(data),
+                ttl=ttl,
             )
 
         return data
@@ -180,7 +180,7 @@ class BaseService:
         cache_key = f'{index}-{query}-{ttl}-{page_size}-{page_number}'
 
         data = await self.cache_handler.get_by_id(
-            cache_key,
+            key=cache_key,
         )
 
         if not data:
@@ -193,9 +193,9 @@ class BaseService:
                 return []
 
             await self.cache_handler.set_by_id(
-                cache_key,
-                json.dumps(data),
-                ttl,
+                key=cache_key,
+                value=json.dumps(data),
+                ttl=ttl,
             )
 
         return data

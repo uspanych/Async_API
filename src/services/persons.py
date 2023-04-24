@@ -9,7 +9,7 @@ from db.redis import get_redis
 from models.films import FilmResponseModel
 from models.persons import Person, PersonSort, PersonPage
 from services.utils.body_elastic import get_body_search, get_body_search_with_films, get_body_query
-from .base import BaseService
+from .base import BaseService, ElasticStorage, RedisCache
 
 
 class PersonService(BaseService):
@@ -187,4 +187,4 @@ def get_person_service(
         redis: Redis = Depends(get_redis),
         elastic: AsyncElasticsearch = Depends(get_elastic),
 ) -> PersonService:
-    return PersonService(redis, elastic)
+    return PersonService(RedisCache(redis), ElasticStorage(elastic))

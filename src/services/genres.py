@@ -10,7 +10,7 @@ from models.genres import (GenreDetailResponseModel, GenreResponseModel,
                            GenreSort)
 from services.utils.body_elastic import get_body_search
 
-from .base import BaseService
+from .base import BaseService, ElasticStorage, RedisCache
 
 
 class GenreService(BaseService):
@@ -64,4 +64,4 @@ def get_genre_service(
         redis: Redis = Depends(get_redis),
         elastic: AsyncElasticsearch = Depends(get_elastic),
 ) -> GenreService:
-    return GenreService(redis, elastic)
+    return GenreService(RedisCache(redis), ElasticStorage(elastic))

@@ -11,6 +11,9 @@ from typing import Annotated
 router = APIRouter()
 
 
+PaginateQuery = Annotated[PaginateQueryParams, Depends(PaginateQueryParams)]
+
+
 @router.get(
     '/search',
     response_model=list[FilmResponseModel],
@@ -18,7 +21,7 @@ router = APIRouter()
 )
 async def films_query_list(
         query: str,
-        pagination: Annotated[PaginateQueryParams, Depends(PaginateQueryParams)],
+        pagination: PaginateQuery,
         film_service: FilmService = Depends(get_film_service)
 ) -> list[FilmResponseModel]:
 
@@ -53,7 +56,7 @@ async def film_details(
     description="Метод, возвращающий список всех фильмов"
 )
 async def films_list(
-        pagination: Annotated[PaginateQueryParams, Depends(PaginateQueryParams)],
+        pagination: PaginateQuery,
         genre: str | None = None,
         actor: str | None = None,
         writer: str | None = None,
